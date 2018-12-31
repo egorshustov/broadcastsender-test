@@ -1,9 +1,8 @@
 package com.egorshustov.broadcastsendertest
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -16,30 +15,29 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        textView = findViewById(R.id.text_view);
+        textView = findViewById(R.id.text_view)
     }
 
     fun sendBroadcast(v: View) {
-        val intent = Intent("com.egorshustov.broadcastreceivertest.EXAMPLE_ACTION")
-        intent.putExtra("com.egorshustov.broadcastreceivertest.EXAMPLE_TEXT", "Broadcast received")
-        sendBroadcast(intent)
-    }
+        val intent = Intent("com.egorshustov.EXAMPLE_ACTION")
+        //intent.setClass(this, ExampleBroadcastReceiver2::class.java)
 
-    private val broadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val receivedText = intent?.getStringExtra("com.egorshustov.broadcastreceivertest.EXAMPLE_TEXT")
-            textView.text = receivedText
+        /*val componentName = ComponentName("com.egorshustov.broadcastreceivertest",
+            "com.egorshustov.broadcastreceivertest.ExampleBroadcastReceiver")
+        intent.component = componentName*/
+
+        /*intent.setClassName("com.egorshustov.broadcastreceivertest",
+            "com.egorshustov.broadcastreceivertest.ExampleBroadcastReceiver")*/
+
+        /*intent.setPackage("com.egorshustov.broadcastreceivertest")
+        sendBroadcast(intent)*/
+
+        val infos : List<ResolveInfo> = packageManager.queryBroadcastReceivers(intent, 0)
+
+        for (info in infos) {
+            val componentName = ComponentName(info.activityInfo.packageName, info.activityInfo.name)
+            intent.component = componentName
+            sendBroadcast(intent)
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val filter = IntentFilter("com.egorshustov.broadcastreceivertest.EXAMPLE_ACTION")
-        registerReceiver(broadcastReceiver, filter)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        unregisterReceiver(broadcastReceiver)
     }
 }
