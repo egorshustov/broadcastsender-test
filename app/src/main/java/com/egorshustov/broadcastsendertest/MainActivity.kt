@@ -1,8 +1,6 @@
 package com.egorshustov.broadcastsendertest
 
 import android.content.*
-import android.content.pm.PackageManager
-import android.content.pm.ResolveInfo
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -20,24 +18,12 @@ class MainActivity : AppCompatActivity() {
 
     fun sendBroadcast(v: View) {
         val intent = Intent("com.egorshustov.EXAMPLE_ACTION")
-        //intent.setClass(this, ExampleBroadcastReceiver2::class.java)
 
-        /*val componentName = ComponentName("com.egorshustov.broadcastreceivertest",
-            "com.egorshustov.broadcastreceivertest.ExampleBroadcastReceiver")
-        intent.component = componentName*/
+        intent.setPackage("com.egorshustov.broadcastreceivertest")
 
-        /*intent.setClassName("com.egorshustov.broadcastreceivertest",
-            "com.egorshustov.broadcastreceivertest.ExampleBroadcastReceiver")*/
+        val initialExtras = Bundle()
+        initialExtras.putString("stringExtra", "Start")
 
-        /*intent.setPackage("com.egorshustov.broadcastreceivertest")
-        sendBroadcast(intent)*/
-
-        val infos : List<ResolveInfo> = packageManager.queryBroadcastReceivers(intent, 0)
-
-        for (info in infos) {
-            val componentName = ComponentName(info.activityInfo.packageName, info.activityInfo.name)
-            intent.component = componentName
-            sendBroadcast(intent)
-        }
+        sendOrderedBroadcast(intent, null, SenderReceiver(), null, 0, "Start", initialExtras)
     }
 }
