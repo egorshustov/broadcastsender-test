@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
         val initialExtras = Bundle()
         initialExtras.putString("stringExtra", "Start")
 
-        sendOrderedBroadcast(intent, null, SenderReceiver(), null, 0, "Start", initialExtras)
+        sendOrderedBroadcast(intent, android.Manifest.permission.WAKE_LOCK,
+            SenderReceiver(), null, 0, "Start", initialExtras)
     }
 }
